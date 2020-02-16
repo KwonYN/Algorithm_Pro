@@ -1,6 +1,6 @@
 // 맞은 코드
 // (중상) [교육P-0034] 당황한 암호학자 
-#if 0
+#if 01
 
 #include <cstdio>
 #include <string>
