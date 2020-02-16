@@ -53,10 +53,10 @@ void print_AC()
 	}
 }
 
-/*
+
 void get_cnt()
 {
-	total_cnt = 0ll;
+	total_cnt = 0;
 	int l = 0;	// AB 시작 인덱스
 	int r = idx - 1;// CD 시작 인덱스
 	long long ll, rr; // 같은 수 몇 개나??
@@ -83,7 +83,7 @@ void get_cnt()
 		else r--;
 	}
 }
-*/
+
 
 void get_cnt()
 {
