@@ -1,3 +1,48 @@
+// 참고 코드
+#include <iostream>
+#include <cstring>
+
+using namespace std;
+
+int N, M;
+bool D[501][501];
+
+bool check(int n) { // main에서 a와 b의 관계를 통해 찾을 수 있는 모든 관계를 찾음(a < b < c라면 a < c에도 체크를 해줌!!)
+		    // 이를 통해 n번이라는 사람보다 큰, 작은 사람들을 모두 알 수 있다면, true 리턴 (main에서 += true하면 += 1과 똑같!!)
+	for (int i = 1; i <= N; i++) {
+		if (i == n)
+			continue;
+		if (!D[i][n] && !D[n][i])
+			return false;
+	}
+	return true;
+}
+
+int main() {
+	ios_base::sync_with_stdio(false); cin.tie(NULL);
+
+	cin >> N >> M;
+	while (M--) {
+		int a, b;
+		cin >> a >> b;
+		D[a][b] = true;
+	}
+	for (int k = 1; k <= N; k++) {
+		for (int i = 1; i <= N; i++) {
+			for (int j = 1; j <= N; j++) {
+				if (D[i][k] && D[k][j])
+					D[i][j] = true;
+			}
+		}
+	}
+	int cnt = 0;
+	for (int i = 1; i <= N; i++)
+		cnt += check(i);
+	cout << cnt << '\n';
+
+	return 0;
+}
+
 // BOJ_2458_키 순서
 #include <cstdio>
 #include <queue>
