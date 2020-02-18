@@ -2,6 +2,97 @@
 	[핵심] : 한 사람보다 큰 사람 + 작은 사람 수가 전체 - 1(자기 자신 제외)라면, 나의 키 순위를 알 수 있음!!	
 */
 
+// 다시 풀어보자!
+// in/out-degree => 즉, DAG로 풀어보자! (ToDo) - 순서에 상관없이 어떻게...??ㅠㅠ
+#if 0
+
+#include <cstdio>
+#include <cstring>
+#include <vector>
+using namespace std;
+#define NMAX	(500)
+
+int T, N, M;
+bool howTall[NMAX + 2][NMAX + 2];
+vector<int> note[NMAX+2];
+int inandout[2][NMAX+2]; // 0 : in, 1 : out
+int cnt;
+
+void make_inandout(int s, int prev) { // dfs
+	
+	for (int next : note[prev]) {
+		if (howTall[prev][next]) {
+			howTall[s][next] = true;
+			inandout[1][prev]++;
+			inandout[0][next]++;
+			make_inandout(s, next);
+		}
+	}
+
+	//for (int i = 1; i <= N; i++) { // a
+	//	for (int j = 1; j <= N; j++) {
+	//		for (int k = 1; k <= N; k++) { // b
+	//			if ( (howTall[i][j]) && (howTall[j][k]) ) howTall[i][k] = true;
+	//		}
+	//	}
+	//}
+}
+
+void get_cnt() {
+	for (int i = 1; i <= N; i++) {
+		for (int j = 1; j <= N; j++) {
+			if (howTall[i][j]) {
+				inandout[1][i]++;
+				inandout[0][j]++;
+			}
+		}
+	}
+}
+
+void init() {
+	for (int i = 1; i <= N; i++) {
+		note[i].clear();
+		for (int j = 1; j <= N; j++) howTall[i][j] = false;
+		for (int j = 0; j < 2; j++) inandout[j][i] = 0;
+	}
+}
+
+int main() {
+	//freopen("in.txt", "r", stdin);
+	int a, b;
+	scanf("%d", &T);
+	for (int tc = 1; tc <= T; tc++) {
+		cnt = 0;
+		scanf("%d", &N);
+		scanf("%d", &M);
+		for (int i = 1; i <= M; i++) {
+			scanf("%d %d", &a, &b);	// a < b
+			howTall[a][b] = true;
+			note[a].push_back(b);
+			inandout[1][a]++;
+			inandout[0][b]++;
+		}
+		for (int i = 1; i <= N; i++) {
+			for (int j : note[i]) {
+				make_inandout(i, j);
+			}
+		}
+		get_cnt();
+		for (int i = 1; i <= N; i++) if (inandout[0][i] + inandout[1][i] + 1 == N) cnt++;
+		//for (int i = 1; i <= N; i++) printf("[%d] out = %d, in = %d\n", i, inandout[1][i], inandout[0][i]);
+		//printf("\n");
+		printf("#%d %d\n", tc, cnt);
+		init();
+	}
+
+	return 0;
+}
+
+#endif
+
+
+
+
 // 참고 코드
 #include <iostream>
 #include <cstring>
