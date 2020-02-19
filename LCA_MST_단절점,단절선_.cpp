@@ -397,6 +397,70 @@ int main()
 }
 #endif
 
+#include    <cstdio>
+#include    <vector>
+#include    <queue>
+#pragma warning(disable:4996)
+ 
+std::vector< std::pair<int, int> > edges[1111]; //a -> b c시간 일 때 최대 2000000 * 1000의 시간이 나올 수 있음
+std::priority_queue<int> paths[1111];
+ 
+struct comp
+{
+    bool operator()(const std::pair<int, int> & a, const std::pair<int, int> & b) 
+    {
+        return a.second > b.second;
+    }
+};
+std::priority_queue< std::pair<int, int>, std::vector<  std::pair<int, int> >, comp > q; //다익스트라 알고리즘용
+int main()
+{
+    int n, m, k;
+    scanf("%d%d%d", &n, &m, &k);
+ 
+    for (int i = 1; i <= m; ++i)
+    {
+        int a, b, c;
+        scanf("%d%d%d", &a, &b, &c);
+        edges[a].push_back(std::make_pair(b, c));
+    }
+ 
+    //다익스트라 알고리즘 
+    q.push(std::make_pair(1,0)); //1번 점으로 가는데 최단 경로는 0 (시작점이므로)
+    paths[1].push(0);
+    while (!q.empty())
+    {
+        int vertex = q.top().first;
+        int time = q.top().second;
+        q.pop();
+ 
+        for (auto next : edges[vertex])
+        {
+            if (paths[next.first].size() < k)
+                paths[next.first].push(time + next.second);
+            else if (paths[next.first].top() > time + next.second)
+            {
+                paths[next.first].pop();
+                paths[next.first].push(time + next.second);
+            }
+            else
+                continue;
+ 
+            q.push(std::make_pair(next.first, time + next.second));
+        }
+    }
+ 
+    for (int i = 1; i <= n; ++i)
+        printf("%d\n", (paths[i].size() == k) ? paths[i].top() : -1);
+ 
+    return 0;
+}
+
+
+출처: https://dyndy.tistory.com/230 [DY N DY]
+
+출처: https://dyndy.tistory.com/230 [DY N DY]
+
 
 
 
