@@ -382,6 +382,9 @@ int main()
 		pq.push(make_pair(0ll, 1));
 		while (!pq.empty()) {
 			cur = pq.top();		pq.pop();
+			// 우선순위 큐(가중치 기준 최소 힙)이라서 가능한 것!!
+			// 어떻게 들어가든 가중치(여기에서는 거리)가 작은 것부터 나오기 때문!!
+			// 1->N까지 두 번만에 가든, 100번 거쳐서 가든 그 다음에 pop되는 값은 거리가 가장 짧은 것!!
 			if (++visited[cur.second] > K) continue;
 			if ((cur.second == N) && (visited[N] == K)) break;
 			for (pair<long long, int> e : edges[cur.second]) {
@@ -397,6 +400,7 @@ int main()
 }
 #endif
 
+// 인터넷 코드 참고
 #include    <cstdio>
 #include    <vector>
 #include    <queue>
@@ -544,6 +548,14 @@ int main()
 	 ==> 음의 Cycle 쌉가능!
 */
 // 선배님 - 벨만 포드 알고리즘
+/*
+	< 계산복잡성 >
+	벨만-포드 알고리즘은 그래프 모든 엣지에 대해 edge relaxation을 시작노드를 제외한 전체 노드수 만큼 반복 수행하고,
+	마지막으로 그래프 모든 엣지에 대해 edge relaxation을 1번 수행해 주므로, 그 계산복잡성은 O(|V||E|)이 됩니다.
+	그런데 dense graph는 엣지 수가 대개 노드 수의 제곱에 근사하므로 간단하게 표현하면 O(|V|3)이 됩니다.
+	이는 다익스트라 알고리즘(O(|V|2)보다 더 큰데, 벨만-포드 알고리즘은 음수인 가중치까지 분석할 수 있기 때문에
+	일종의 trade-off라고 생각해도 될 것 같다는 생각이 듭니다.
+*/
 #if 01
 
 #include <cstdio>
@@ -581,6 +593,7 @@ int main()
 	scanf("%d", &T);
 	for (int tc = 1; tc <= T; tc++) {
 		scanf("%d %d", &X, &Y);
+		init();
 		//return 0;
 		scanf("%d", &M);
 		for (int i = 0; i < M; i++) {	// 메테오
@@ -597,12 +610,14 @@ int main()
 		// get_exit
 		int ny, nx, nt;
 		bool cantExit = false;
-		dijk[0][0] = 0;
+		dijk[0][0] = 0; // 시작 노드는 0으로 시작!
+		
+		// 벨만-포드 알고리즘은 시작노드를 제외한 전체 노드수 만큼의 edge relaxation을 수행해야 합니다. 
 		for (int i = 0; i < Y*X - 1; i++) {
 			for (int y = 0; y < Y; y++) {
 				for (int x = 0; x < X; x++) {
 					if (dijk[y][x] != INF && !((y == Y - 1) && (x == X - 1))) {
-						if (!space[y][x]) {	// 아무 것도 없음
+						if (!space[y][x]) {	// 아무 것도 없음(메테오도, 웜홀도)
 							for (int d = 0; d < 4; d++) {
 								ny = y + dy[d];		nx = x + dx[d];
 								if (ny < 0 || ny >= Y || nx < 0 || nx >= X) continue;
@@ -623,16 +638,28 @@ int main()
 				}
 			}
 		}
-
+		
+		// "다익스트라 알고리즘(Dijkstra’s algorithm)"과 달리 벨만-포드 알고리즘은 가중치가 음수인 경우에도 적용 가능합니다.
+		// 그러나 다음과 같이 음수 가중치가 사이클(cycle)을 이루고 있는 경우에는 작동하지 않습니다.
 		for (int y = 0; y < Y; y++) {
 			for (int x = 0; x < X; x++) {
 				if (dijk[y][x] != INF && !((y == Y - 1) && (x == X - 1))) {
-					if (space[y][x] > 0) {	// 워프
+					if (!space[y][x]) {	// 아무 것도 없음(메테오도, 웜홀도)
+						for (int d = 0; d < 4; d++) {
+							ny = y + dy[d];		nx = x + dx[d];
+							if (ny < 0 || ny >= Y || nx < 0 || nx >= X) continue;
+							if (space[ny][nx] != -1 && dijk[ny][nx] > dijk[y][x] + 1) {
+								dijk[ny][nx] = dijk[y][x] + 1;
+							}
+						}
+					}
+					else if (space[y][x] > 0) {
 						ny = w[space[y][x]].ey;
 						nx = w[space[y][x]].ex;
 						nt = w[space[y][x]].tm;
-						if (dijk[ny][nx] > dijk[y][x] + nt) {
-							cantExit = true; break;
+						if (dijk[ny][nx] > dijk[y][x] + tm) {
+							dijk[ny][nx] = dijk[y][x] + tm;
+							cantExit = true;	// 음의 가중치 때문에 더 작아진다면, mininf!!
 						}
 					}
 				}
@@ -679,7 +706,7 @@ int main()
 #1 noway
 #2 4
 #3 mininf
-#4 -2
+#4 -2			// 이거만 답이 다름 ㅠㅠ - 왜 안나오는지.. 디버깅 같이 도움 받자!!
 
 */
 
