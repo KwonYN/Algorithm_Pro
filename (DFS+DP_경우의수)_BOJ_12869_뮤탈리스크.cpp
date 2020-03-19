@@ -18,12 +18,11 @@ int get_min_cnt(int a, int b, int c) {
 	if(b < 0) b = 0;
 	if(c < 0) c = 0;
 	
+	for(int i = 1; i <= 6; i++) {
+		if(a <= damage[i][1] && b <= damage[i][2] && c <= damage[i][3]) dp[a][b][c] = 1;
+	}
 	if(dp[a][b][c] != -1) return dp[a][b][c];
 
-	for(int i = 1; i <= 6; i++) {
-		if(a <= damage[i][1] && b <= damage[i][2] && c <= damage[i][3])
-			return dp[a][b][c] = 1;
-	}
 	dp[a][b][c] = 987654321;
 	for(int j = 1; j <= 6; j++) {
 		dp[a][b][c] = min(dp[a][b][c], get_min_cnt(a-damage[j][1], b-damage[j][2], c-damage[j][3])+1);
