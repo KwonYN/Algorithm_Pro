@@ -83,3 +83,84 @@ int main()
     return 0;
 }
 #endif
+
+// 또 다른 방법!!
+#if 01
+#pragma warning(disable: 4996)
+#include <cstdio>
+#include <vector>
+#include <queue>
+#include <algorithm>
+using namespace std;
+#define INF     (987654321)
+
+typedef pair<int, int> pii;
+int N, M, S, D;
+vector<pii> edges[510];
+int dijk[510];
+bool chk[510][510];
+
+void init() {
+    for (int i = 0; i < N; i++) {
+        edges[i].clear();
+        for (int j = 0; j < N; j++) {
+            chk[i][j] = false;
+        }
+    }
+}
+
+void dijkstra() {
+    priority_queue<pii, vector<pii>, greater<pii>> pq;
+    for (int i = 0; i < N; i++) dijk[i] = INF;
+    pq.push({ 0, S });  dijk[S] = 0;
+    while (!pq.empty()) {
+        pii cur = pq.top();     pq.pop();
+        for (pii next : edges[cur.second]) {
+            if (chk[cur.second][next.second] == false) continue;
+            if (dijk[next.second] > dijk[cur.second] + next.first) {
+                dijk[next.second] = dijk[cur.second] + next.first;
+                pq.push({ dijk[next.second] , next.second });
+            }
+        }
+    }
+}
+
+void erase_edges() {
+    queue<int> que;
+    que.push(D);
+    while (!que.empty()) {
+        int out = que.front();      que.pop();
+        for (int i = 0; i < N; i++) {
+            if (chk[i][out] == false) continue;
+            for (pii prev : edges[i]) {
+                if (prev.second == out && dijk[out] == dijk[i] + prev.first) {
+                    chk[i][out] = false;
+                    que.push(i);
+                }
+            }
+        }
+    }
+}
+
+int main()
+{
+    freopen("in.txt", "r", stdin);
+    int u, v, p;
+    while (true) {
+        scanf("%d %d", &N, &M);
+        if (N == 0 && M == 0) break;
+        init();
+        scanf("%d %d", &S, &D);
+        for (int i = 1; i <= M; i++) {
+            scanf("%d %d %d", &u, &v, &p);
+            edges[u].push_back({ p, v }); // u--(p)-->v
+            chk[u][v] = true;
+        }
+        dijkstra();
+        erase_edges();
+        dijkstra();
+        printf("%d\n", dijk[D] == INF ? -1 : dijk[D]);
+    }
+    return 0;
+}
+#endif
