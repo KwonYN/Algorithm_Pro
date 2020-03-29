@@ -18,7 +18,7 @@ int AA[MAX*MAX], BB[MAX*MAX], a_cnt, b_cnt;
 ll cnt;
 
 void input() {
-    cnt = 0;
+    cnt = a_cnt = b_cnt = 0;
     scanf("%d", &T);
     A[0] = B[0];
     scanf("%d", &n);
