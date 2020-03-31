@@ -15,7 +15,7 @@
 using namespace std;
 #define MAX     (100000)
 
-typedef struct { int x, y, z; }NODE;
+typedef struct { int x, y, z, no; }NODE;
 typedef struct { int dist, v1, v2; }EDGES;
 NODE planet[MAX + 10];
 int N, min_cost, cnt;
@@ -34,11 +34,7 @@ int find(int v) {
 
 bool find_chk(int a, int b) { return find(a) != find(b); }
 
-void unite(int v1, int v2) {
-    v1 = find(v1);
-    v2 = find(v2);
-    parent[v1] = v2;
-}
+void unite(int v1, int v2) { parent[find(v1)] = find(v2); }
 
 int main()
 {
@@ -49,11 +45,11 @@ int main()
     for (int i = 0; i < N; i++) parent[i] = i;
     for (int i = 0; i < N; i++) {
         scanf("%d %d %d", &a, &b, &c);
-        planet[i] = { a, b, c };
+        planet[i] = { a, b, c, i };
     }
     sort(planet, planet + N, cmp_x);
     for (int i = 1; i < N; i++) {
-        edges.push_back({ abs(planet[i-1].x - planet[i].x), i-1, i });
+        edges.push_back({ abs(planet[i-1].x - planet[i].x), planet[i-1].no, planet[i].no });
     }
     /*printf("[x] : ");
     for (int i = 0; i < N; i++) printf("%d ", planet[i].x);
@@ -61,7 +57,7 @@ int main()
 
     sort(planet, planet + N, cmp_y);
     for (int i = 1; i < N; i++) {
-        edges.push_back({ abs(planet[i-1].y - planet[i].y), i-1, i });
+        edges.push_back({ abs(planet[i-1].y - planet[i].y), planet[i - 1].no, planet[i].no });
     }
     /*printf("[y] : ");
     for (int i = 0; i < N; i++) printf("%d ", planet[i].y);
@@ -69,7 +65,7 @@ int main()
 
     sort(planet, planet + N, cmp_z);
     for (int i = 1; i < N; i++) {
-        edges.push_back({ abs(planet[i-1].z - planet[i].z), i-1, i });
+        edges.push_back({ abs(planet[i-1].z - planet[i].z), planet[i - 1].no, planet[i].no });
     }
     /*printf("[z] : ");
     for (int i = 0; i < N; i++) printf("%d ", planet[i].z);
