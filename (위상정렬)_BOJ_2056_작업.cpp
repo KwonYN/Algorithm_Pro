@@ -1,3 +1,31 @@
+// ㅁㅊㄷ ㅁㅊㅇ
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
+int N;
+int time[10001];
+int mx;
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(0);
+	cin >> N;
+	for (int i = 1; i <= N; i++) {
+		int t, n, t2;
+		cin >> t >> n;
+		for (int j = 0; j < n; j++) {
+			cin >> t2;
+			time[i] = max(time[i], time[t2]);
+		}
+		time[i] += t;
+		mx = max(mx, time[i]);
+	}
+	cout << mx;
+	return 0;
+}
+
+
 // 굉장히 나에게는 신기한.. 그러한 남의 코드... 한 번 봅시다!!
 #include <cstdio>
 #include <cctype>
